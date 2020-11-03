@@ -1,0 +1,57 @@
+<template>
+	<div>
+		<!-- 在nvue中使用时流畅度不如APP-VUE和H5，原因是opacity使用的是css3的过渡而不是weex的animation模块，因为在animation模块中使用opacity一直不生效，俺也不知道咋回事/(ㄒoㄒ)/~~ -->
+		<text :id="randomId" class="content" @tap="$refs.popup.open()">点击显示放大popup</text>
+		<zwp-blowup-popup ref="popup" :selector="randomId" @change="onChange">
+			<!-- 这里需要注意一下，要给这个容器设置一下完整的宽度，不然的话会一直是动画之前的宽度，就是👆上面这个content的宽度 -->
+			<view :style="{ width: windowWidth + 'px' }">
+				<placeholder-text :pNum="2" :lNum="5" />
+				<text class="btn" @tap="$refs.popup.close()">点击隐藏</text>
+			</view>
+		</zwp-blowup-popup>
+	</div>
+</template>
+
+<script>
+export default {
+	data() {
+		const { windowWidth } = uni.getSystemInfoSync()
+		return {
+			windowWidth,
+			randomId: `content${parseInt(Math.random() * 1000)}`
+		}
+	},
+
+	methods: {
+		onChange({ detail }) {
+			uni.showToast({
+				title: `popup${detail.value ? '显示' : '隐藏'}`,
+				icon: 'none'
+			})
+		}
+	}
+}
+</script>
+
+<style scoped>
+.content {
+	margin: 20px;
+	width: 375rpx;
+	height: 200rpx;
+	line-height: 200rpx;
+	text-align: center;
+	font-size: 16px;
+	box-shadow: 0 0 6rpx rgba(0, 0, 0, 0.3);
+}
+
+.btn {
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	margin: 20px;
+	border-radius: 5px;
+	background-color: #00b4ff;
+	color: #fff;
+	font-size: 16px;
+}
+</style>
